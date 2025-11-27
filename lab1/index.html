@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+<title>PA#1</title>
+<style>
+    body {
+        background: linear-gradient(135deg, #8996ca, #bfbfbf);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0;
+        padding: 40px 0;
+        font-family: "Segoe UI", Roboto, Arial, sans-serif;
+        color: #333333;
+        text-align: center;
+    }
+
+    h2 {
+        font-size: 32px;
+        margin-bottom: 10px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: #2a2a2a;
+    }
+
+    #message {
+        font-size: 18px;
+        margin-bottom: 25px;
+        color: #444;
+        opacity: 0.85;
+    }
+
+    #canvas-holder {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
+    #webglcanvas {
+        border-radius: 12px;
+        background: #0a0a0a;
+        box-shadow:
+            0 0 15px rgba(0, 0, 0, 0.35),
+            0 8px 25px rgba(0, 0, 0, 0.35);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    #webglcanvas:hover {
+        transform: scale(1.015);
+        box-shadow:
+            0 0 20px rgba(0, 0, 0, 0.35),
+            0 12px 35px rgba(0, 0, 0, 0.45);
+    }
+</style>
+
+
+<script src="./Utils/trackball-rotator.js"></script>
+<script src="./Utils/m4.js"></script>
+<script src="./shader.gpu"></script>
+<script src="./main.js"></script>
+
+</head>
+<body onload="init()">
+
+<h2>The Klein Bottle</h2>
+
+<p id="message">variant 21</p>
+
+
+<div id="canvas-holder">
+   <canvas width="600" height="600" id="webglcanvas" style="background-color:red"></canvas>
+</div>
+
+
+</body></html>
