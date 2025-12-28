@@ -1,0 +1,86 @@
+// Vertex shader
+const vertexShaderSource = `
+attribute vec3 a_position;
+attribute vec3 a_normal;
+attribute vec2 a_texcoord;
+attribute vec3 a_tangent;
+attribute vec3 a_bitangent;
+
+uniform mat4 u_projectionMatrix;
+uniform mat4 u_modelViewMatrix;
+uniform mat4 u_normalMatrix;
+
+varying vec2 v_texcoord;
+varying vec3 v_fragPos;   
+varying mat3 v_TBN;      
+
+void main() {
+    // позиція вершини у view space
+    vec4 viewPos4 = u_modelViewMatrix * vec4(a_position, 1.0);
+    v_fragPos = viewPos4.xyz;
+
+    gl_Position = u_projectionMatrix * viewPos4;
+    v_texcoord = a_texcoord;
+
+    // Перетворення базису TBN
+    mat3 normalMat = mat3(u_normalMatrix);
+
+    vec3 T = normalize(normalMat * a_tangent);
+    vec3 B = normalize(normalMat * a_bitangent);
+    vec3 N = normalize(normalMat * a_normal);
+
+    v_TBN = mat3(T, B, N);
+}
+`;
+
+
+// Fragment shader
+const fragmentShaderSource = `
+precision mediump float;
+
+varying vec2 v_texcoord;
+varying vec3 v_fragPos;
+varying mat3 v_TBN;
+
+uniform sampler2D u_diffuseTex;
+uniform sampler2D u_specularTex;
+uniform sampler2D u_normalTex;
+
+uniform bool u_useDiffuse;
+uniform bool u_useSpecular;
+uniform bool u_useNormal;
+
+uniform vec3 u_lightPosition;
+
+void main() {
+    // diffuse
+    vec3 diffColor = u_useDiffuse
+        ? texture2D(u_diffuseTex, v_texcoord).rgb
+        : vec3(1.0);
+
+    // specular
+    vec3 specColor = u_useSpecular
+        ? texture2D(u_specularTex, v_texcoord).rgb
+        : vec3(1.0);
+
+    // normal map → [-1..1]
+    vec3 normalMap = u_useNormal
+        ? (texture2D(u_normalTex, v_texcoord).rgb * 2.0 - 1.0)
+        : vec3(0.0, 0.0, 1.0);
+
+    // нормаль у view space
+    vec3 N = normalize(v_TBN * normalMap);
+
+    vec3 L = normalize(u_lightPosition - v_fragPos);
+    vec3 V = normalize(-v_fragPos);
+    vec3 R = reflect(-L, N);
+
+    // Phong освітлення
+    vec3 ambient = 0.1 * diffColor;
+    vec3 diffuse = diffColor * max(dot(N, L), 0.0);
+    vec3 specular = specColor * pow(max(dot(V, R), 0.0), 32.0);
+
+    gl_FragColor = vec4(ambient + diffuse + specular, 1.0);
+}
+`;
+

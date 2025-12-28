@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PA#2</title>
+
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: linear-gradient(135deg, #8996ca, #bfbfbf);
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    h2 {
+        margin: 10px 0;
+        color: #2a2a2a;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    #canvas-holder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 80%;
+        max-width: 800px;
+        flex: none;
+    }
+
+    canvas {
+        border-radius: 15px;
+        width: 100%;
+        aspect-ratio: 1 / 1; /* завжди квадратний */
+        background-color: #0a0a0a;
+        box-shadow:
+            0 0 15px rgba(0, 0, 0, 0.35),
+            0 8px 25px rgba(0, 0, 0, 0.35);
+    }
+
+    #controls {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 20px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 15px 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        max-width: 90%;
+    }
+
+    .control-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    label {
+        font-weight: 500;
+    }
+
+    input[type="range"], input[type="number"] {
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+    }
+
+    input[type="range"] {
+        width: 120px;
+    }
+
+    .radio-group {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+    }
+</style>
+
+<script src="./Utils/trackball-rotator.js"></script>
+<script src="./Utils/m4.js"></script>
+<script src="./shader.gpu"></script>
+<script src="./main.js"></script>
+
+</head>
+<body onload="init()">
+
+<h2>The Klein Bottle</h2>
+
+<div id="canvas-holder">
+    <canvas id="webglcanvas"></canvas>
+</div>
+
+<div id="controls">
+    <div class="control-group">
+        <label for="uSlider">U Steps:</label>
+        <input type="range" id="uSlider" min="3" max="150" value="80" oninput="updateUSteps(this.value)">
+        <span id="uSliderValue">80</span>
+    </div>
+
+    <div class="control-group">
+        <label for="vSlider">V Steps:</label>
+        <input type="range" id="vSlider" min="3" max="150" value="80" oninput="updateVSteps(this.value)">
+        <span id="vSliderValue">80</span>
+    </div>
+
+    <div class="control-group">
+        <label>Mode:</label>
+        <div class="radio-group">
+            <input type="radio" id="modeFill" name="renderMode" value="fill" checked onchange="setRenderMode(this.value)">
+            <label for="modeFill">PA2</label>
+            <input type="radio" id="modeWire" name="renderMode" value="wireframe" onchange="setRenderMode(this.value)">
+            <label for="modeWire">PA1</label>
+        </div>
+    </div>
+    <label >Texture:</label>
+    <div class="texture-group">
+        
+        <label>
+            <input type="checkbox" id="useDiffuseMap" checked onchange="updateRenderSettings()">
+            Use Diffuse Map
+        </label>
+
+        <label>
+            <input type="checkbox" id="useSpecularMap" checked onchange="updateRenderSettings()">
+            Use Specular Map
+        </label>
+
+        <label>
+            <input type="checkbox" id="useNormalMap" checked onchange="updateRenderSettings()">
+            Use Normal Map
+        </label>
+    </div>
+</div>
+
+</body>
+</html>
